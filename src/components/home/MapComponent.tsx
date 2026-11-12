@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { antennes } from "@/data/antennes";
 
 export default function MapComponent() {
     const [isMounted, setIsMounted] = useState(false);
@@ -12,15 +13,6 @@ export default function MapComponent() {
         setIsMounted(true);
     }, []);
 
-    // Liste des antennes StartGen
-    const antennes = [
-        { nom: "StartGen Mons", position: [50.4542, 3.9523] as [number, number], desc: "Antenne principale - Campus Warocqué / Hub Mons", active: true },
-        { nom: "StartGen Louvain-la-Neuve", position: [50.6681, 4.6117] as [number, number], desc: "Antenne partenaire - UCLouvain", active: false },
-        { nom: "StartGen Namur", position: [50.4674, 4.8720] as [number, number], desc: "Antenne partenaire - UNamur", active: false },
-        { nom: "StartGen Liège", position: [50.6326, 5.5797] as [number, number], desc: "Antenne partenaire - ULiège", active: false },
-    ];
-
-    // Icône personnalisée Leaflet
     const customIcon = L.icon({
         iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
         iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -28,21 +20,21 @@ export default function MapComponent() {
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+        shadowSize: [41, 41],
     });
 
     if (!isMounted) {
         return (
-            <div className="h-[450px] bg-[#1E1E1E] rounded-2xl flex items-center justify-center text-gray-400 border border-white/10">
+            <div className="flex h-[450px] items-center justify-center rounded-2xl border border-white/10 bg-surface text-gray-400">
                 Chargement de la carte interactive...
             </div>
         );
     }
 
     return (
-        <div className="h-[450px] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl z-0 relative">
+        <div className="relative z-0 h-[450px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
             <MapContainer
-                center={[50.50, 4.60]}
+                center={[50.5, 4.6]}
                 zoom={8}
                 scrollWheelZoom={false}
                 style={{ height: "100%", width: "100%", background: "#1E1E1E" }}
@@ -52,13 +44,17 @@ export default function MapComponent() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {antennes.map((antenne, index) => (
-                    <Marker key={index} position={antenne.position} icon={customIcon}>
+                {antennes.map((antenne) => (
+                    <Marker key={antenne.id} position={antenne.position} icon={customIcon}>
                         <Popup>
                             <div className="p-1 text-gray-900">
-                                <strong className="text-blue-600">{antenne.nom}</strong>
-                                <p className="text-xs mt-1">{antenne.desc}</p>
-                                {antenne.active && <span className="inline-block mt-2 bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">Site Actif (Mons)</span>}
+                                <strong>{antenne.nom}</strong>
+                                <p className="mt-1 text-xs">{antenne.description}</p>
+                                {antenne.active && (
+                                    <span className="mt-2 inline-block rounded bg-cyan-100 px-2 py-0.5 text-[10px] font-bold text-cyan-900">
+                    Actif ici
+                  </span>
+                                )}
                             </div>
                         </Popup>
                     </Marker>
