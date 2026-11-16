@@ -1,50 +1,48 @@
-// src/components/layout/Navbar.tsx
+import Image from "next/image";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
+import { SITE } from "@/data/site";
+
+// Pour ajouter une page au menu : une ligne ici.
+// (Le lien "Événements" sera à remettre quand la page /events existera.)
+const LIENS = [
+    { href: "/", label: "Accueil" },
+    { href: "/#about", label: "À propos" },
+    { href: "/#reseau", label: "Localisation" },
+    { href: "/#partners", label: "Partenaires" },
+    { href: "/contact", label: "Contact" },
+];
 
 export default function Navbar() {
     return (
-        <header className="w-full bg-[#1E1E1E] border-b border-white/10 px-8 py-4 sticky top-0 z-50">
-            <div className="w-full flex items-center justify-between">
-
-                {/* GAUCHE : Logo en cercle parfait + Titre + "Les Jeunes Entreprises" */}
-                <Link href="/" className="flex items-center gap-3 group">
-                    <div className="w-11 h-11 rounded-full bg-[#00D9FF]/10 border-2 border-[#00D9FF]/40 flex items-center justify-center overflow-hidden group-hover:border-[#00D9FF] transition shadow-md">
-                        <img
-                            src="/logo_startgen"
-                            alt="StartGen Mons Logo"
-                            className="w-full h-full object-cover"
-                        />
+        <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-surface px-8 py-4">
+            <div className="flex w-full items-center justify-between">
+                {/* Gauche : logo + nom */}
+                <Link href="/" className="group flex items-center gap-3">
+                    <div className="relative h-11 w-11 overflow-hidden rounded-full border-2 border-brand/40 bg-brand/10 shadow-md transition group-hover:border-brand">
+                        <Image src={SITE.logo} alt={`Logo ${SITE.complet}`} fill sizes="44px" className="object-cover" />
                     </div>
                     <div>
-                        <span className="text-xl font-extrabold tracking-tight text-white group-hover:text-[#00D9FF] transition block leading-tight">
-                            StartGen <span className="text-[#00D9FF]">Mons</span>
+                        <span className="block text-xl font-extrabold leading-tight tracking-tight text-white transition group-hover:text-brand">
+                            {SITE.nom} <span className="text-brand">{SITE.accent}</span>
                         </span>
-                        <span className="text-[11px] text-gray-400 font-medium tracking-wider uppercase block">
-                            Les Jeunes Entreprises
+                        <span className="block text-[11px] font-medium uppercase tracking-wider text-gray-400">
+                            {SITE.organisation}
                         </span>
                     </div>
                 </Link>
 
-                {/* MILIEU : Tous les liens de navigation (Ancres + Pages) */}
-                <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-300">
-                    <Link href="/" className="hover:text-[#00D9FF] transition">Accueil</Link>
-                    <Link href="/#about" className="hover:text-[#00D9FF] transition">À propos</Link>
-                    <Link href="/#map" className="hover:text-[#00D9FF] transition">Localisation</Link>
-                    <Link href="/#partners" className="hover:text-[#00D9FF] transition">Partenaires</Link>
-                    <Link href="/events" className="hover:text-[#00D9FF] transition">Événements</Link>
-                    <Link href="/contact" className="hover:text-[#00D9FF] transition">Contact</Link>
+                {/* Milieu : liens */}
+                <nav className="hidden items-center gap-7 text-sm font-medium text-gray-300 md:flex">
+                    {LIENS.map((lien) => (
+                        <Link key={lien.href} href={lien.href} className="transition hover:text-brand">
+                            {lien.label}
+                        </Link>
+                    ))}
                 </nav>
 
-                {/* DROITE : Bouton de connexion */}
-                <div>
-                    <Link
-                        href="/login"
-                        className="bg-[#00D9FF] hover:bg-[#00bfe6] text-[#1E1E1E] font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-md inline-block"
-                    >
-                        Connexion
-                    </Link>
-                </div>
-
+                {/* Droite : connexion */}
+                <Button href="/login">Connexion</Button>
             </div>
         </header>
     );

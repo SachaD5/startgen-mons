@@ -5,12 +5,16 @@ export default function Hero() {
     return (
         <section className="relative h-[calc(100vh-73px)] text-white flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-white/10">
 
-            {/* Image de fond + filtre sombre */}
+            {/* Image de fond */}
             <div
                 className="absolute inset-0 -z-20 bg-cover bg-center"
-                style={{ backgroundImage: "url('/fond_ecran.jpg')" }} // <--- Mets le nom de ton image de fond dans public/
+                style={{ backgroundImage: "url('/fond_ecran.jpg')" }}
             />
-            <div className="absolute inset-0 -z-10 bg-[#1E1E1E]/85 backdrop-blur-[2px]" />
+
+            {/* Vrai filtre noir opaque en CSS pur (75% d'opacité) */}
+            <div
+                className="absolute inset-0 -z-10 backdrop-blur-[2px]" style={{ backgroundColor: "rgba(0, 0, 0, 0.30)" }}
+            />
 
             {/* Petit badge */}
             <span className="bg-[#00D9FF]/10 text-[#00D9FF] text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider mb-6 inline-block border border-[#00D9FF]/20">
