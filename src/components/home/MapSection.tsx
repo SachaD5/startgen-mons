@@ -1,7 +1,7 @@
 import Badge from "@/components/ui/Badge";
 import MapLoader from "@/components/home/MapLoader";
 import AntenneCard from "@/components/home/AntenneCard";
-import { antennes } from "@/data/antennes";
+import { antennas } from "@/data/antennas";
 
 export default function MapSection() {
     return (
@@ -24,7 +24,7 @@ export default function MapSection() {
 
                     <div className="space-y-3">
                         <h3 className="mb-4 text-lg font-semibold text-white">Antennes disponibles :</h3>
-                        {antennes.map((antenne) => (
+                        {antennas.map((antenne) => (
                             <AntenneCard key={antenne.id} antenne={antenne} />
                         ))}
                     </div>

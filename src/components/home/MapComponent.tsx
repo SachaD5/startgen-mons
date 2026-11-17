@@ -3,7 +3,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { antennes } from "@/data/antennes";
+import { antennas } from "@/data/antennas";
 
 // Créée une seule fois (et non à chaque affichage du composant)
 const customIcon = L.icon({
@@ -30,7 +30,7 @@ export default function MapComponent() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {antennes.map((antenne) => (
+                {antennas.map((antenne) => (
                     <Marker key={antenne.id} position={antenne.position} icon={customIcon}>
                         <Popup>
                             <div className="p-1 text-gray-900">

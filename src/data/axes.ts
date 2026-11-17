@@ -24,7 +24,7 @@ export const axes: Axe[] = [
     {
         titre: "Networking & Connexion avec LJE",
         texte:
-            "Participez à des afterworks exclusifs, des hackathons inter-antennes et des événements de networking avec le réseau national de LJE. Développez votre carnet d'adresses et trouvez vos futurs associés dès les bancs de la HELHa.",
+            "Participez à des afterworks exclusifs, des hackathons inter-antennas et des événements de networking avec le réseau national de LJE. Développez votre carnet d'adresses et trouvez vos futurs associés dès les bancs de la HELHa.",
         image: "/fond_ecran.jpg",
         alt: "Networking StartGen Mons",
     },

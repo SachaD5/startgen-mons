@@ -8,7 +8,7 @@ export type Antenne = {
     active: boolean;
 };
 
-export const antennes: Antenne[] = [
+export const antennas: Antenne[] = [
     {
         id: "mons",
         nom: "StartGen Mons",

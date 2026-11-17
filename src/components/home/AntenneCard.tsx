@@ -1,6 +1,6 @@
-import type { Antenne } from "@/data/antennes";
+import type { Antenne } from "@/data/antennas";
 
-// Une carte de la liste des antennes, à côté de la carte interactive
+// Une carte de la liste des antennas, à côté de la carte interactive
 export default function AntenneCard({ antenne }: { antenne: Antenne }) {
     return (
         <div
