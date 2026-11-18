@@ -4,9 +4,9 @@ import AuthButton from "@/components/auth/AuthButton";
 import { SITE } from "@/data/site";
 
 // Pour ajouter une page au menu : une ligne ici.
-// (Le lien "Événements" sera à remettre quand la page /events existera.)
 const LIENS = [
     { href: "/", label: "Accueil" },
+    { href: "/agenda", label: "Agenda" },
     { href: "/#about", label: "À propos" },
     { href: "/#reseau", label: "Localisation" },
     { href: "/#partners", label: "Partenaires" },

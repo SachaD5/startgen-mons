@@ -10,22 +10,43 @@ type Props = {
     /** Panneau de gauche (visible sur grand écran) */
     panelTitle: string;
     panelPoints: string[];
+    /** Photo du panneau de gauche (fichier du dossier public/) */
+    image: string;
+    /** Partie de la photo à montrer : "20% 50%" = plutôt à gauche, "80% 50%" = plutôt à droite */
+    imagePosition?: string;
+    /** Agrandit la photo pour ne montrer qu'un morceau (1 = photo entière) */
+    imageZoom?: number;
     children: React.ReactNode;
 };
 
 // Cadre commun des pages Connexion et Inscription :
 // à gauche un panneau avec l'image du site, à droite le formulaire.
-export default function AuthShell({ badge, title, subtitle, panelTitle, panelPoints, children }: Props) {
+export default function AuthShell({
+    badge,
+    title,
+    subtitle,
+    panelTitle,
+    panelPoints,
+    image,
+    imagePosition = "50% 50%",
+    imageZoom = 1,
+    children,
+}: Props) {
     return (
         <section className="px-4 py-10 md:py-16">
             <div className="animate-fade-up mx-auto grid max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-black/40 shadow-2xl lg:grid-cols-2">
                 {/* Panneau image (caché sur mobile) */}
                 <aside className="relative hidden flex-col justify-between overflow-hidden p-10 lg:flex">
-                    <div
-                        className="absolute inset-0 bg-cover"
+                    <Image
+                        src={image}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 1400px, 0px"
+                        className="object-cover"
                         style={{
-                            backgroundImage: "url('/ABB01564.jpg')",
-                            backgroundPosition: "58% center"
+                            objectPosition: imagePosition,
+                            transform: `scale(${imageZoom})`,
+                            transformOrigin: imagePosition,
                         }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-surface/90 via-surface/80 to-brand/30" />

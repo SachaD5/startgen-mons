@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FormCard from "@/components/ui/FormCard";
 import FormField from "@/components/ui/FormField";
 import Button from "@/components/ui/Button";
 import Alert from "@/components/ui/Alert";
@@ -65,7 +64,7 @@ export default function ContactForm() {
     // Écran de confirmation
     if (sentTo) {
         return (
-            <div className="animate-fade-up rounded-2xl border border-white/10 bg-black p-8 text-center sm:p-12">
+            <div className="animate-fade-up py-8 text-center">
                 <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
                     <IconCheck className="h-8 w-8" />
                 </div>
@@ -82,7 +81,7 @@ export default function ContactForm() {
     }
 
     return (
-        <FormCard onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             {error && <Alert>{error}</Alert>}
 
             <div className="grid gap-5 sm:grid-cols-2">
@@ -155,6 +154,6 @@ export default function ContactForm() {
                 {!loading && <IconSend className="h-4 w-4" />}
                 {loading ? "Envoi en cours…" : "Envoyer le message"}
             </Button>
-        </FormCard>
+        </form>
     );
 }
