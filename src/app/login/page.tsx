@@ -1,13 +1,22 @@
-import PageHeader from "@/components/ui/PageHeader";
+import AuthShell from "@/components/auth/AuthShell";
 import LoginForm from "@/components/forms/LoginForm";
 
 export const metadata = { title: "Connexion" };
 
 export default function LoginPage() {
     return (
-        <div className="mx-auto max-w-md px-4 py-16">
-            <PageHeader badge="Espace Membre" title="Connexion" subtitle="Accède à ton espace membre." />
+        <AuthShell
+            badge="Espace Membre"
+            title="Content de te revoir"
+            subtitle="Connecte-toi pour accéder à ton espace StartGen."
+            panelTitle="Ton réseau d'entrepreneurs t'attend."
+            panelPoints={[
+                "Accède à ton espace membre",
+                "Découvre les prochains événements de l'antenne de Mons",
+                "Reste en lien avec le réseau StartGen",
+            ]}
+        >
             <LoginForm />
-        </div>
+        </AuthShell>
     );
 }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import AuthButton from "@/components/auth/AuthButton";
 import { SITE } from "@/data/site";
 
 // Pour ajouter une page au menu : une ligne ici.
@@ -41,8 +41,8 @@ export default function Navbar() {
                     ))}
                 </nav>
 
-                {/* Droite : connexion */}
-                <Button href="/login">Connexion</Button>
+                {/* Droite : Connexion, ou prénom + Déconnexion si connecté */}
+                <AuthButton />
             </div>
         </header>
     );

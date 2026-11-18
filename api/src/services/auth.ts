@@ -1,34 +1,60 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import * as userRepo from "../repositories/users.js";
-import { ValidationError, UnauthorizedError } from "../errors.js";
+import { signToken } from "./tokens.js";
+import { ConflictError, UnauthorizedError } from "../errors.js";
+import type { LoginInput, RegisterInput } from "../schemas/auth.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "secret_devops_helha";
+const ROUNDS = 10;
 
-export async function registerUser(data: any) {
-    const existing = await userRepo.findByEmail(data.email);
-    if (existing) throw new ValidationError("Cet email est déjà utilisé");
+// Hash "bidon" : sert à faire le même travail quand l'e-mail n'existe pas,
+// pour qu'on ne puisse pas deviner quels e-mails sont inscrits en mesurant le temps de réponse.
+const DUMMY_HASH = bcrypt.hashSync("mot-de-passe-bidon", ROUNDS);
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = await userRepo.createUser({
-        ...data,
-        password: hashedPassword,
-    });
+type UserRow = { id: string; email: string; nom: string; prenom: string; role: string };
 
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+// Ce qu'on a le droit d'envoyer au navigateur : JAMAIS le mot de passe haché.
+function toPublicUser(user: UserRow) {
+    return { id: user.id, email: user.email, nom: user.nom, prenom: user.prenom, role: user.role };
 }
 
-export async function loginUser(data: any) {
+function isUniqueViolation(err: unknown): boolean {
+    return typeof err === "object" && err !== null && "code" in err && err.code === "P2002";
+}
+
+export async function registerUser(data: RegisterInput) {
+    if (await userRepo.findByEmail(data.email)) {
+        throw new ConflictError("Cet e-mail est déjà utilisé");
+    }
+
+    const password = await bcrypt.hash(data.password, ROUNDS);
+
+    let user;
+    try {
+        // Champs listés un par un : le rôle est toujours "USER" (valeur par défaut de la base)
+        user = await userRepo.create({ email: data.email, password, nom: data.nom, prenom: data.prenom });
+    } catch (err) {
+        // Deux inscriptions simultanées avec le même e-mail : la base refuse la seconde
+        if (isUniqueViolation(err)) throw new ConflictError("Cet e-mail est déjà utilisé");
+        throw err;
+    }
+
+    return { token: signToken(user), user: toPublicUser(user) };
+}
+
+export async function loginUser(data: LoginInput) {
     const user = await userRepo.findByEmail(data.email);
-    if (!user) throw new UnauthorizedError("Email ou mot de passe incorrect");
 
-    const valid = await bcrypt.compare(data.password, user.password);
-    if (!valid) throw new UnauthorizedError("Email ou mot de passe incorrect");
+    const valid = await bcrypt.compare(data.password, user?.password ?? DUMMY_HASH);
+    if (!user || !valid) {
+        // Même message dans les deux cas : on ne révèle pas si l'e-mail existe
+        throw new UnauthorizedError("E-mail ou mot de passe incorrect");
+    }
 
-    const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
-    return {
-        token,
-        user: { id: user.id, email: user.email, nom: user.nom, prenom: user.prenom, role: user.role }
-    };
+    return { token: signToken(user), user: toPublicUser(user) };
+}
+
+export async function getProfile(userId: string) {
+    const user = await userRepo.findById(userId);
+    if (!user) throw new UnauthorizedError("Compte introuvable");
+    return toPublicUser(user);
 }

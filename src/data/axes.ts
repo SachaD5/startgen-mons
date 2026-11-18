@@ -11,7 +11,7 @@ export const axes: Axe[] = [
         titre: "Incubation & Suivi Personnalisé",
         texte:
             "À Mons, chaque projet bénéficie d'un suivi sur-mesure. Nous aidons les étudiants à structurer leur business plan, valider leur modèle économique et préparer leurs pitchs face à de véritables investisseurs et partenaires régionaux.",
-        image: "/fond_ecran2.jpg",
+        image: "/startgen-165.jpg",
         alt: "Incubation et Coaching StartGen Mons",
     },
     {
@@ -25,7 +25,7 @@ export const axes: Axe[] = [
         titre: "Networking & Connexion avec LJE",
         texte:
             "Participez à des afterworks exclusifs, des hackathons inter-antennas et des événements de networking avec le réseau national de LJE. Développez votre carnet d'adresses et trouvez vos futurs associés dès les bancs de la HELHa.",
-        image: "/fond_ecran.jpg",
+        image: "/startgen-043.jpg   ",
         alt: "Networking StartGen Mons",
     },
 ];

@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Rôles possibles (SQLite n'a pas d'enum) : "USER" ou "ADMIN"
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  nom       String
+  prenom    String
+  role      String   @default("USER")
+  events    Event[]  @relation("UserEvents")
+  createdAt DateTime @default(now())
+}
+
+// type : "atelier" | "workshop" | "hackathon" | "networking" | "concours" | "autre"
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  date        DateTime
+  location    String
+  description String
+  type        String   @default("autre")
+  createdById String
+  createdBy   User     @relation("UserEvents", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([date])
+}
+
+// Messages envoyés depuis le formulaire de contact
+// sujet : "evenement" | "partenariat" | "rejoindre" | "autre"
+model ContactMessage {
+  id        String   @id @default(uuid())
+  nom       String
+  email     String
+  sujet     String
+  message   String
+  lu        Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

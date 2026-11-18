@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
+# dependencies (à tous les niveaux : racine ET api/)
+node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +19,7 @@
 
 # production
 /build
+/api/dist/
 
 # misc
 .DS_Store
@@ -30,8 +31,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files : jamais commités, sauf les modèles .env.example
 .env*
+!.env.example
+
+# bases de données SQLite locales (les migrations suffisent à les recréer)
+*.db
+*.db-journal
+
+# IDE
+.idea/
+*.iml
+.vscode/
 
 # vercel
 .vercel
