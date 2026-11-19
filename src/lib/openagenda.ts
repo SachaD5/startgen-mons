@@ -58,7 +58,7 @@ function convertir(e: any, agendaSlug: string | null): AgendaEvent {
 // Garde le résultat en cache 1 heure : on ne tape pas l'API d'OpenAgenda à chaque visite.
 export async function getAgendaEvents(): Promise<AgendaResult> {
     "use cache";
-    cacheLife("hours");
+    cacheLife("seconds");
 
     const key = process.env.OPENAGENDA_KEY;
     const uid = process.env.OPENAGENDA_AGENDA_UID;

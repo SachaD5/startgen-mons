@@ -5,27 +5,34 @@ export type Axe = {
     alt: string;
 };
 
-// Les 3 axes du programme (section "À propos")
+// Ce que fait Startgen Mons concrètement (page "À propos")
 export const axes: Axe[] = [
     {
-        titre: "Incubation & Suivi Personnalisé",
+        titre: "Des conférences qui donnent envie",
         texte:
-            "À Mons, chaque projet bénéficie d'un suivi sur-mesure. Nous aidons les étudiants à structurer leur business plan, valider leur modèle économique et préparer leurs pitchs face à de véritables investisseurs et partenaires régionaux.",
+            "Des conférences inspirantes et des rencontres avec des entrepreneurs, pour démontrer que l'entrepreneuriat est accessible, même quand on est étudiant.",
         image: "/startgen-165.jpg",
-        alt: "Incubation et Coaching StartGen Mons",
+        alt: "Conférence Startgen Mons devant une salle remplie",
     },
     {
-        titre: "Workshops Pratiques & Formations Tech",
+        titre: "Des workshops pour passer à l'action",
         texte:
-            "Parce qu'un projet nécessite des compétences techniques et managériales solides, nous organisons régulièrement des ateliers pratiques axés sur le développement web, le marketing digital, la gestion de projet et la conformité légale.",
+            "Des activités pour développer les compétences entrepreneuriales : l'art du pitch, l'audace, l'organisation. Dans un environnement bienveillant, on ose, on teste et on met ses idées au jour.",
+        image: "/startgen-036.jpg",
+        alt: "Interview sur scène lors d'un événement Startgen Mons",
+    },
+    {
+        titre: "Un réseau pour avancer ensemble",
+        texte:
+            "Un réseau qui permet aux étudiants entrepreneurs de trouver des partenaires, des mentors ou de l'aide : subsides via Wallonie Entreprendre, conseils financiers via BNP Paribas Fortis, et bien d'autres ressources.",
+        image: "/startgen-043.jpg",
+        alt: "Étudiants qui discutent après un événement Startgen Mons",
+    },
+    {
+        titre: "De la visibilité pour les projets",
+        texte:
+            "Nous mettons en avant des projets innovants, pour offrir aux étudiants entrepreneurs une visibilité accrue et valoriser leurs initiatives.",
         image: "/fond_ecran2.jpg",
-        alt: "Workshops StartGen Mons",
-    },
-    {
-        titre: "Networking & Connexion avec LJE",
-        texte:
-            "Participez à des afterworks exclusifs, des hackathons inter-antennas et des événements de networking avec le réseau national de LJE. Développez votre carnet d'adresses et trouvez vos futurs associés dès les bancs de la HELHa.",
-        image: "/startgen-043.jpg   ",
-        alt: "Networking StartGen Mons",
+        alt: "Présentation de projets devant un écran lors d'un événement",
     },
 ];

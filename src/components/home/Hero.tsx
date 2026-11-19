@@ -1,14 +1,19 @@
 // src/components/home/Hero.tsx
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Hero() {
     return (
         <section className="relative h-[calc(100vh-73px)] text-white flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-white/10">
 
-            {/* Image de fond */}
-            <div
-                className="absolute inset-0 -z-20 bg-cover bg-center"
-                style={{ backgroundImage: "url('/fond_ecran.jpg')" }}
+            {/* Image de fond (optimisée par Next.js : bien plus légère que le fichier d'origine) */}
+            <Image
+                src="/fond_ecran.jpg"
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className="-z-20 object-cover object-center"
             />
 
             {/* Vrai filtre noir opaque en CSS pur (75% d'opacité) */}
