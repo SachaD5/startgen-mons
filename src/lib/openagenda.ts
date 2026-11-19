@@ -8,7 +8,9 @@ const API = process.env.OPENAGENDA_API_URL ?? "https://api.openagenda.com/v2";
 export type AgendaEvent = {
     uid: number;
     titre: string;
-    description: string;
+    resume: string; // courte présentation (200 caractères max sur OpenAgenda)
+    description: string; // description complète
+    prix: string; // champ "conditions" d'OpenAgenda (tarifs, conditions d'accès) : vide si non rempli
     dates: { debut: string; fin: string }[]; // ISO, triées de la plus proche à la plus lointaine
     lieu: string;
     ville: string;
@@ -42,7 +44,9 @@ function convertir(e: any, agendaSlug: string | null): AgendaEvent {
     return {
         uid: e.uid,
         titre: texte(e.title),
-        description: texte(e.description),
+        resume: texte(e.description),
+        description: texte(e.longDescription) || texte(e.description),
+        prix: texte(e.conditions),
         dates,
         lieu: e.location?.name ?? "",
         ville: e.location?.city ?? "",

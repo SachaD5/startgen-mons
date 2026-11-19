@@ -15,8 +15,8 @@ export default function RegisterPage() {
                 "Participe aux ateliers, workshops et rencontres",
                 "Fais grandir ton projet avec le réseau",
             ]}
-            image="/fond_ecran2.jpg"
-            imagePosition="35% 50%"
+            image="/ABB01564.jpg"
+            imagePosition="65% 50%"
             imageZoom={1.2}
         >
             <RegisterForm />

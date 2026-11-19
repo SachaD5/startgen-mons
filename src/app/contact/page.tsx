@@ -15,8 +15,8 @@ export default function ContactPage() {
                 "Partenariat ou sponsoring",
                 "Une question sur un événement",
             ]}
-            image="/fond_ecran.jpg"
-            imagePosition="85% 50%"
+            image="/startgen-195.jpg"
+            imagePosition="62% 50%"
             imageZoom={1.2}
         >
             <ContactForm />

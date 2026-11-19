@@ -36,7 +36,7 @@ export default function AuthShell({
         <section className="px-4 py-10 md:py-16">
             <div className="animate-fade-up mx-auto grid max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-black/40 shadow-2xl lg:grid-cols-2">
                 {/* Panneau image (caché sur mobile) */}
-                <aside className="relative hidden flex-col justify-between overflow-hidden p-10 lg:flex">
+                <aside className="relative hidden flex-col justify-center overflow-hidden p-10 lg:flex">
                     <Image
                         src={image}
                         alt=""
@@ -49,18 +49,9 @@ export default function AuthShell({
                             transformOrigin: imagePosition,
                         }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-br from-surface/90 via-surface/80 to-brand/30" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-surface/95 via-surface/85 to-brand/30" />
 
-                    <div className="relative flex items-center gap-3">
-                        <div className="relative h-11 w-11 overflow-hidden rounded-full border-2 border-brand/40">
-                            <Image src={SITE.logo} alt="" fill sizes="44px" className="object-cover" />
-                        </div>
-                        <span className="text-lg font-extrabold tracking-tight">
-                            {SITE.nom} <span className="text-brand">{SITE.accent}</span>
-                        </span>
-                    </div>
-
-                    <div className="relative">
+                    <div className="relative [text-shadow:0_2px_12px_rgb(0_0_0/0.7)]">
                         <h2 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight">{panelTitle}</h2>
                         <ul className="space-y-4">
                             {panelPoints.map((point) => (
@@ -74,7 +65,7 @@ export default function AuthShell({
                         </ul>
                     </div>
 
-                    <p className="relative text-xs text-gray-400">{SITE.complet} · {SITE.organisation}</p>
+                    <p className="absolute bottom-6 left-10 text-xs text-gray-400">{SITE.complet} · {SITE.organisation}</p>
                 </aside>
 
                 {/* Formulaire */}

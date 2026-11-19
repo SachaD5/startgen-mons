@@ -15,8 +15,8 @@ export default function LoginPage() {
                 "Découvre les prochains événements de l'antenne de Mons",
                 "Reste en lien avec le réseau StartGen",
             ]}
-            image="/fond_ecran.jpg"
-            imagePosition="25% 50%"
+            image="/ABB01564.jpg"
+            imagePosition="55% 50%"
             imageZoom={1.2}
         >
             <LoginForm />
