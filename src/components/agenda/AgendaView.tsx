@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import type { AgendaEvent } from "@/lib/openagenda";
+import { createPortal } from "react-dom";
 
 /* ------------------------------------------------------------------ */
 /*  Outils : dates, textes                                             */
@@ -278,15 +279,17 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                     filtresActifs={filtresActifs}
                 />
             )}
-
-            {/* Fiche en fenêtre (vue liste) */}
-            {vue === "liste" && fenetre && selection && (
-                <div className="fixed inset-0 z-[60] flex items-end justify-center p-0 sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={selection.event.titre}>
+            {/* Fiche en fenêtre (vue liste).
+                Elle est "téléportée" tout en haut de la page (document.body) : sinon elle se place par rapport au grand cadre
+                de la page (qui a une animation) au lieu de l'écran, et se retrouve décalée ou coupée. */}
+            {vue === "liste" && fenetre && selection && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={selection.event.titre}>
                     <button aria-label="Fermer" onClick={() => setFenetre(false)} className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm" />
-                    <div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl sm:rounded-3xl">
+                    <div className="scroll-discret relative max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-t-3xl sm:rounded-3xl">
                         <Fiche o={selection} now={now} onFermer={() => setFenetre(false)} fermerLabel="Fermer" />
                     </div>
-                </div>
+                </div>,
+                document.body,
             )}
         </div>
     );
