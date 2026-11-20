@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { AgendaEvent } from "@/lib/openagenda";
-import { jourDe, cleDe, moisDe, Occurence, Mois, Vue } from "@/components/agenda/outils";
+import { jourDe, cleDe, moisDe, couleurVille, Occurence, Mois, Vue } from "@/components/agenda/outils";
 import { Fiche } from "@/components/agenda/Fiche";
 import { Calendrier } from "@/components/agenda/Calendrier";
 import { ListeDuMois, ListeParMois } from "@/components/agenda/Listes";
@@ -103,7 +103,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                                     setFenetre(false);
                                 }}
                                 className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition ${
-                                    vue === v ? "bg-brand text-black" : "text-gray-300 hover:text-white"
+                                    vue === v ? "bg-[#3B82F6] text-white" : "text-gray-300 hover:text-white"
                                 }`}
                             >
                                 {v}
@@ -119,7 +119,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                             value={recherche}
                             onChange={(e) => setRecherche(e.target.value)}
                             placeholder="Rechercher un événement"
-                            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:border-brand focus:outline-none sm:w-64"
+                            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:border-[#3B82F6] focus:outline-none sm:w-64"
                         />
                     </label>
                 </div>
@@ -128,7 +128,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                     <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrer par ville">
                         <Puce actif={ville === null} onClick={() => setVille(null)}>Toutes les villes</Puce>
                         {villes.map((v) => (
-                            <Puce key={v} actif={ville === v} onClick={() => setVille(ville === v ? null : v)}>
+                            <Puce key={v} couleur={couleurVille(v)} actif={ville === v} onClick={() => setVille(ville === v ? null : v)}>
                                 {v}
                             </Puce>
                         ))}
@@ -150,7 +150,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                             setVille(null);
                             setRecherche("");
                         }}
-                        className="mt-4 rounded-full border border-brand/50 px-5 py-2 text-sm font-semibold text-brand transition hover:bg-brand/10"
+                        className="mt-4 rounded-full border border-[#3B82F6]/50 px-5 py-2 text-sm font-semibold text-[#60A5FA] transition hover:bg-[#3B82F6]/10"
                     >
                         Effacer les filtres
                     </button>
@@ -158,7 +158,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
             )}
 
             {occurences.length > 0 && vue === "calendrier" && (
-                <div ref={zoneRef} className="grid scroll-mt-24 items-start gap-6 xl:grid-cols-12">
+                <div ref={zoneRef} className="grid scroll-mt-24 items-start gap-6 xl:grid-cols-12 xl:items-stretch">
                     <div className="xl:col-span-8">
                         {mois ? (
                             <Calendrier mois={mois} onMois={setMois} parJour={parJour} aujourdhui={aujourdhui} now={now} choisie={choisie} onChoisir={ouvrir} />
@@ -168,9 +168,11 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                     </div>
 
                     {/* Colonne de droite : la fiche de l'événement choisi, sinon les événements du mois affiché */}
-                    <aside className="xl:sticky xl:top-24 xl:col-span-4">
+                    <aside className="xl:col-span-4">
                         {selection ? (
-                            <Fiche o={selection} now={now} onFermer={() => setChoisie(null)} fermerLabel="Retour au mois" />
+                            <div className="xl:sticky xl:top-24">
+                                <Fiche o={selection} now={now} onFermer={() => setChoisie(null)} fermerLabel="Retour au mois" />
+                            </div>
                         ) : (
                             mois && <ListeDuMois mois={mois} occurences={occurences} now={now} choisie={choisie} onChoisir={ouvrir} />
                         )}
@@ -206,15 +208,17 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
     );
 }
 
-function Puce({ actif, onClick, children }: { actif: boolean; onClick: () => void; children: React.ReactNode }) {
+function Puce({ actif, onClick, couleur, children }: { actif: boolean; onClick: () => void; couleur?: string; children: React.ReactNode }) {
     return (
         <button
             onClick={onClick}
             aria-pressed={actif}
-            className={`rounded-full border px-3.5 py-1.5 text-sm transition ${
-                actif ? "border-brand bg-brand/15 font-semibold text-brand" : "border-white/10 text-gray-300 hover:border-white/30"
+            style={couleur && actif ? { borderColor: couleur, backgroundColor: `${couleur}26`, color: couleur } : undefined}
+            className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition ${
+                actif ? (couleur ? "font-semibold" : "border-[#3B82F6] bg-[#3B82F6]/15 font-semibold text-[#60A5FA]") : "border-white/10 text-gray-300 hover:border-white/30"
             }`}
         >
+            {couleur && <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: couleur }} />}
             {children}
         </button>
     );

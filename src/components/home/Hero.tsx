@@ -16,10 +16,8 @@ export default function Hero() {
                 className="-z-20 object-cover object-center"
             />
 
-            {/* Vrai filtre noir opaque en CSS pur (75% d'opacité) */}
-            <div
-                className="absolute inset-0 -z-10 backdrop-blur-[2px]" style={{ backgroundColor: "rgba(0, 0, 0, 0.30)" }}
-            />
+            {/* Même filtre que les bandeaux des autres pages (À propos, Localisation...) */}
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-surface/95 via-surface/80 to-brand/20" />
 
             {/* Petit badge */}
             <span className="bg-[#00D9FF]/10 text-[#00D9FF] text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider mb-6 inline-block border border-[#00D9FF]/20">

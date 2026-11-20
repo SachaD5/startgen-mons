@@ -3,15 +3,13 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import type { AgendaEvent } from "@/lib/openagenda";
-import { fmtJourLong, fmtHeure, paragraphes, estGratuit, telechargerIcs, Occurence } from "@/components/agenda/outils";
+import { fmtJourLong, fmtHeure, paragraphes, lienGoogleAgenda, couleurVille, teinte, Occurence } from "@/components/agenda/outils";
 import { Ico, ICONES } from "@/components/ui/Ico";
 
 export function BadgePrix({ prix }: { prix: string }) {
     return (
         <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                estGratuit(prix) ? "bg-emerald-500/15 text-emerald-300" : "bg-brand/15 text-brand"
-            }`}
+            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300"
         >
             <Ico d={ICONES.euro} className="h-3.5 w-3.5" />
             {prix}
@@ -24,11 +22,12 @@ export function Fiche({ o, now, onFermer, fermerLabel }: { o: Occurence; now: Da
     const lieu = [event.lieu, event.ville].filter(Boolean).join(", ");
     const fini = now ? Date.parse(o.fin) < now.getTime() : false;
     const textes = paragraphes(event.description);
+    const c = couleurVille(event.ville);
     const bouton = useRef<HTMLButtonElement>(null);
     useEffect(() => bouton.current?.focus({ preventScroll: true }), [o]);
 
     return (
-        <article className="animate-fade-up overflow-hidden rounded-3xl border border-brand/40 bg-[#141414] shadow-2xl">
+        <article style={{ borderColor: teinte(c, 0.6) }} className="animate-fade-up overflow-hidden rounded-3xl border bg-[#141414] shadow-2xl">
             {event.image && (
                 <div className="relative h-44 w-full sm:h-56">
                     <Image src={event.image} alt="" fill sizes="(min-width: 1280px) 500px, 100vw" className="object-cover" unoptimized />
@@ -38,6 +37,12 @@ export function Fiche({ o, now, onFermer, fermerLabel }: { o: Occurence; now: Da
                 <div className="flex items-start justify-between gap-4">
                     <div>
                         <div className="mb-2 flex flex-wrap gap-2">
+                            {event.ville && (
+                                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: teinte(c, 0.16), color: c }}>
+                                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c }} />
+                                    {event.ville}
+                                </span>
+                            )}
                             {fini && <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gray-300">Terminé</span>}
                             {event.prix && <BadgePrix prix={event.prix} />}
                         </div>
@@ -49,10 +54,10 @@ export function Fiche({ o, now, onFermer, fermerLabel }: { o: Occurence; now: Da
                 </div>
 
                 <ul className="space-y-3 text-sm text-gray-200">
-                    <Ligne icone={ICONES.cal}><span className="capitalize">{fmtJourLong(o.debut)}</span></Ligne>
-                    <Ligne icone={ICONES.clock}>De {fmtHeure(o.debut)} à {fmtHeure(o.fin)}</Ligne>
-                    {lieu && <Ligne icone={ICONES.pin}>{lieu}</Ligne>}
-                    <Ligne icone={ICONES.euro}>{event.prix || "Prix non précisé"}</Ligne>
+                    <Ligne accent={c} icone={ICONES.cal}><span className="capitalize">{fmtJourLong(o.debut)}</span></Ligne>
+                    <Ligne accent={c} icone={ICONES.clock}>De {fmtHeure(o.debut)} à {fmtHeure(o.fin)}</Ligne>
+                    {lieu && <Ligne accent={c} icone={ICONES.pin}>{lieu}</Ligne>}
+                    <Ligne accent={c} icone={ICONES.euro}>{event.prix || "Prix non précisé"}</Ligne>
                 </ul>
 
                 {textes.length > 0 && (
@@ -65,14 +70,19 @@ export function Fiche({ o, now, onFermer, fermerLabel }: { o: Occurence; now: Da
 
                 <div className="flex flex-wrap gap-3 border-t border-white/10 pt-5">
                     {event.url && (
-                        <a href={event.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-brand-hover">
+                        <a href={event.url} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: c }} className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-black transition hover:opacity-90">
                             Voir sur OpenAgenda <Ico d={ICONES.ext} className="h-4 w-4" />
                         </a>
                     )}
                     {!fini && (
-                        <button onClick={() => telechargerIcs(o)} className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-brand hover:text-brand">
-                            <Ico d={ICONES.cal} className="h-4 w-4" /> Ajouter à mon agenda
-                        </button>
+                        <a
+                            href={lienGoogleAgenda(o)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/50"
+                        >
+                            <Ico d={ICONES.cal} className="h-4 w-4" /> Ajouter à Google Agenda
+                        </a>
                     )}
                 </div>
             </div>
@@ -80,10 +90,10 @@ export function Fiche({ o, now, onFermer, fermerLabel }: { o: Occurence; now: Da
     );
 }
 
-function Ligne({ icone, children }: { icone: string; children: React.ReactNode }) {
+function Ligne({ icone, accent, children }: { icone: string; accent: string; children: React.ReactNode }) {
     return (
         <li className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+            <span style={{ backgroundColor: teinte(accent, 0.12), color: accent }} className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg">
                 <Ico d={icone} className="h-4 w-4" />
             </span>
             <span className="pt-0.5">{children}</span>

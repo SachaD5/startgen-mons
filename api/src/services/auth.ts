@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import * as userRepo from "../repositories/users.js";
 import { signToken } from "./tokens.js";
-import { ConflictError, UnauthorizedError } from "../errors.js";
-import type { LoginInput, RegisterInput } from "../schemas/auth.js";
+import { ConflictError, UnauthorizedError, ValidationError } from "../errors.js";
+import type { ChangePasswordInput, LoginInput, RegisterInput, UpdateProfileInput } from "../schemas/auth.js";
 
 const ROUNDS = 10;
 
@@ -57,4 +57,42 @@ export async function getProfile(userId: string) {
     const user = await userRepo.findById(userId);
     if (!user) throw new UnauthorizedError("Compte introuvable");
     return toPublicUser(user);
+}
+
+// Modifier nom, prénom et e-mail du compte connecté
+export async function updateProfile(userId: string, data: UpdateProfileInput) {
+    if (!(await userRepo.findById(userId))) throw new UnauthorizedError("Compte introuvable");
+
+    // L'e-mail doit rester unique : refusé s'il appartient à quelqu'un d'autre
+    const taken = await userRepo.findByEmail(data.email);
+    if (taken && taken.id !== userId) throw new ConflictError("Cet e-mail est déjà utilisé");
+
+    try {
+        const user = await userRepo.update(userId, { email: data.email, nom: data.nom, prenom: data.prenom });
+        return toPublicUser(user);
+    } catch (err) {
+        if (isUniqueViolation(err)) throw new ConflictError("Cet e-mail est déjà utilisé");
+        throw err;
+    }
+}
+
+// Changer son mot de passe (l'ancien est obligatoire)
+export async function changePassword(userId: string, data: ChangePasswordInput) {
+    const user = await userRepo.findById(userId);
+    if (!user) throw new UnauthorizedError("Compte introuvable");
+
+    // Erreur 400 (et pas 401) : le jeton est bon, c'est juste l'ancien mot de passe qui est faux
+    const valid = await bcrypt.compare(data.currentPassword, user.password);
+    if (!valid) {
+        throw new ValidationError("Données invalides", {
+            fieldErrors: { currentPassword: ["Mot de passe actuel incorrect"] },
+        });
+    }
+    if (data.currentPassword === data.newPassword) {
+        throw new ValidationError("Données invalides", {
+            fieldErrors: { newPassword: ["Le nouveau mot de passe doit être différent de l'ancien"] },
+        });
+    }
+
+    await userRepo.update(userId, { password: await bcrypt.hash(data.newPassword, ROUNDS) });
 }

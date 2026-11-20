@@ -34,5 +34,22 @@ export const loginSchema = z.object({
     password: z.string({ error: "Le mot de passe est obligatoire" }).min(1, { error: "Le mot de passe est obligatoire" }),
 });
 
+// Modifier son profil : nom, prénom, e-mail (jamais le rôle)
+export const updateProfileSchema = z.object({
+    nom: name("Le nom"),
+    prenom: name("Le prénom"),
+    email,
+});
+
+// Changer son mot de passe : il faut connaître l'ancien
+export const changePasswordSchema = z.object({
+    currentPassword: z
+        .string({ error: "Le mot de passe actuel est obligatoire" })
+        .min(1, { error: "Le mot de passe actuel est obligatoire" }),
+    newPassword: password,
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

@@ -27,6 +27,7 @@ function removeToken() {
 type Status = "loading" | "anonymous" | "authenticated";
 
 type RegisterData = { nom: string; prenom: string; email: string; password: string };
+type ProfileData = { nom: string; prenom: string; email: string };
 
 type AuthContextValue = {
     status: Status;
@@ -34,6 +35,10 @@ type AuthContextValue = {
     login: (email: string, password: string) => Promise<void>;
     register: (data: RegisterData) => Promise<void>;
     logout: () => void;
+    /** Modifie nom, prénom et e-mail du compte connecté. Renvoie le profil à jour. */
+    updateProfile: (data: ProfileData) => Promise<User>;
+    /** Change le mot de passe (l'ancien est obligatoire). */
+    changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -88,9 +93,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setStatus("anonymous");
     }, []);
 
+    // Appel à l'API avec le jeton de la session. Si la session a expiré (401), on déconnecte proprement.
+    const authed = useCallback(
+        async function <T>(path: string, options: { method: string; body?: unknown }): Promise<T> {
+            const token = readToken();
+            if (!token) {
+                logout();
+                throw new ApiError("Ta session a expiré. Reconnecte-toi.", 401);
+            }
+            try {
+                return await api<T>(path, { ...options, token });
+            } catch (err) {
+                if (err instanceof ApiError && err.status === 401) logout();
+                throw err;
+            }
+        },
+        [logout],
+    );
+
+    const updateProfile = useCallback(
+        async (data: ProfileData) => {
+            const { user } = await authed<{ user: User }>("/auth/me", { method: "PATCH", body: data });
+            setUser(user);
+            return user;
+        },
+        [authed],
+    );
+
+    const changePassword = useCallback(
+        async (currentPassword: string, newPassword: string) => {
+            await authed<void>("/auth/me/password", { method: "PUT", body: { currentPassword, newPassword } });
+        },
+        [authed],
+    );
+
     const value = useMemo(
-        () => ({ status, user, login, register, logout }),
-        [status, user, login, register, logout],
+        () => ({ status, user, login, register, logout, updateProfile, changePassword }),
+        [status, user, login, register, logout, updateProfile, changePassword],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

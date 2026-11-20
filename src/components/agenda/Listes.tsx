@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { jourDe, fmt, fmtHeure, fmtMoisAnnee, cleDe, estGratuit, Occurence, Mois, Vue } from "@/components/agenda/outils";
+import { jourDe, fmt, fmtHeure, fmtMoisAnnee, cleDe, couleurVille, teinte, Occurence, Mois, Vue } from "@/components/agenda/outils";
 import {  } from "@/components/ui/Ico";
 
 export function ListeDuMois({
@@ -14,16 +14,26 @@ export function ListeDuMois({
     onChoisir: (o: Occurence) => void;
 }) {
     const debutMois = `${mois.y}-${String(mois.m + 1).padStart(2, "0")}-01`;
-    const suite = occurences.filter((o) => jourDe(o.debut) >= debutMois);
+    // On part d'aujourd'hui (ou du 1er du mois affiché si on a avancé dans le calendrier) : le passé n'intéresse personne
+    const aujourdhui = now ? jourDe(now) : null;
+    const depuisAujourdhui = aujourdhui !== null && aujourdhui >= debutMois;
+    const suite = occurences.filter((o) => {
+        if (depuisAujourdhui) return jourDe(o.debut) >= aujourdhui && (!now || Date.parse(o.fin) >= now.getTime());
+        return jourDe(o.debut) >= debutMois;
+    });
     const titre = new Intl.DateTimeFormat("fr-BE", { timeZone: "UTC", month: "long", year: "numeric" }).format(new Date(Date.UTC(mois.y, mois.m, 1)));
     const jours = [...new Set(suite.map((o) => jourDe(o.debut)))];
     const moisDuJour = (j: string) => j.slice(0, 7);
 
     return (
-        <div className="scroll-discret rounded-2xl bg-white/[0.04] p-5 xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto">
-            <h3 className="text-lg font-bold text-white">À partir de <span className="capitalize">{titre}</span></h3>
+        // Sur grand écran, la colonne prend exactement la hauteur du calendrier (même s'il s'agrandit) et défile à l'intérieur
+        <div className="relative xl:h-full xl:min-h-[32rem]">
+        <div className="scroll-discret rounded-2xl bg-white/[0.04] p-5 xl:absolute xl:inset-0 xl:overflow-y-auto">
+            <h3 className="text-lg font-bold text-white">
+                {depuisAujourdhui ? "À partir d'aujourd'hui" : <>À partir de <span className="capitalize">{titre}</span></>}
+            </h3>
             <p className="mb-4 text-sm text-gray-400">
-                {suite.length === 0 ? "Aucun événement à partir de ce mois." : `${suite.length} événement${suite.length > 1 ? "s" : ""}. Clique pour voir la fiche.`}
+                {suite.length === 0 ? "Aucun événement à venir." : `${suite.length} événement${suite.length > 1 ? "s" : ""}. Clique pour voir la fiche.`}
             </p>
             <div className="space-y-5">
                 {jours.map((jour, i) => {
@@ -34,13 +44,13 @@ export function ListeDuMois({
                         <section key={jour}>
                             {/* Quand on passe au mois suivant : un séparateur bien visible */}
                             {nouveauMois && (
-                                <p className="mb-4 mt-2 rounded-lg bg-brand/10 px-3 py-2 text-sm font-bold capitalize text-brand">{fmtMoisAnnee(duJour[0].debut)}</p>
+                                <p className="mb-4 mt-2 rounded-lg bg-[#3B82F6]/10 px-3 py-2 text-sm font-bold capitalize text-[#60A5FA]">{fmtMoisAnnee(duJour[0].debut)}</p>
                             )}
                             {/* En-tête de date : sépare clairement chaque journée */}
                             <div className="mb-2.5 flex items-center gap-3">
-                                <h4 className={`text-sm font-bold capitalize ${estAujourdhui ? "text-brand" : "text-white"}`}>
+                                <h4 className={`text-sm font-bold capitalize ${estAujourdhui ? "text-[#60A5FA]" : "text-white"}`}>
                                     {fmt(duJour[0].debut, { weekday: "long", day: "numeric", month: "long" })}
-                                    {estAujourdhui && <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-[11px] font-semibold text-black">Aujourd&apos;hui</span>}
+                                    {estAujourdhui && <span className="ml-2 rounded-full bg-[#3B82F6] px-2 py-0.5 text-[11px] font-semibold text-white">Aujourd&apos;hui</span>}
                                 </h4>
                                 <span className="h-px flex-1 bg-white/15" />
                             </div>
@@ -53,6 +63,7 @@ export function ListeDuMois({
                     );
                 })}
             </div>
+        </div>
         </div>
     );
 }
@@ -126,29 +137,33 @@ function Carte({ o, now, actif, onChoisir, compact }: { o: Occurence; now: Date 
     const { event } = o;
     const lieu = [event.lieu, event.ville].filter(Boolean).join(", ");
     const fini = now ? Date.parse(o.fin) < now.getTime() : false;
+    const c = couleurVille(event.ville);
+    const boite = fini ? undefined : { backgroundColor: teinte(c, 0.14), color: c };
 
     return (
         <li>
             <button
                 onClick={onChoisir}
                 aria-pressed={actif}
-                className={`flex h-full w-full gap-4 rounded-2xl border p-4 text-left transition ${
-                    actif ? "border-brand bg-brand/10" : "border-white/10 bg-black/40 hover:border-brand/50"
-                }`}
+                style={actif ? { borderColor: c, backgroundColor: teinte(c, 0.11) } : { borderColor: teinte(c, 0.25) }}
+                className="flex h-full w-full gap-4 rounded-2xl border bg-black/40 p-4 text-left transition hover:brightness-110"
             >
                 {compact ? (
-                    <div className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl text-sm font-bold ${fini ? "bg-white/10 text-gray-300" : "bg-brand/10 text-brand"}`}>
+                    <div style={boite} className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl text-sm font-bold ${fini ? "bg-white/10 text-gray-300" : ""}`}>
                         <span>{fmtHeure(o.debut)}</span>
                         <span className="text-[11px] font-medium opacity-70">{fmtHeure(o.fin)}</span>
                     </div>
                 ) : (
-                    <div className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl ${fini ? "bg-white/10 text-gray-300" : "bg-brand/10 text-brand"}`}>
+                    <div style={boite} className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl ${fini ? "bg-white/10 text-gray-300" : ""}`}>
                         <span className="text-2xl font-extrabold leading-none">{fmt(o.debut, { day: "numeric" })}</span>
                         <span className="mt-1 text-[11px] font-semibold uppercase">{fmt(o.debut, { month: "short" }).replace(".", "")}</span>
                     </div>
                 )}
                 <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold leading-snug text-white">{event.titre}</h3>
+                    <div className="flex items-center gap-2">
+                        <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: c }} />
+                        <h3 className="truncate font-semibold leading-snug text-white">{event.titre}</h3>
+                    </div>
                     <p className="mt-1 text-xs text-gray-400">
                         {compact ? lieu : (
                             <>
@@ -159,7 +174,7 @@ function Carte({ o, now, actif, onChoisir, compact }: { o: Occurence; now: Date 
                     </p>
                     {!compact && event.resume && <p className="mt-2 line-clamp-2 text-sm text-gray-300">{event.resume}</p>}
                     {event.prix && (
-                        <p className={`mt-2 text-xs font-semibold ${estGratuit(event.prix) ? "text-emerald-300" : "text-brand"}`}>{event.prix}</p>
+                        <p className="mt-2 text-xs font-semibold text-emerald-300">{event.prix}</p>
                     )}
                 </div>
                 {!compact && event.image && (

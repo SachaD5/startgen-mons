@@ -35,30 +35,44 @@ export const paragraphes = (t: string) =>
 
 export const estGratuit = (prix: string) => /^\s*(gratuit|free|entrée libre)/i.test(prix);
 
-// Fichier .ics : s'ouvre dans Google Agenda, Outlook, Apple Calendar...
-export function telechargerIcs(o: Occurence) {
-    const utc = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-    const esc = (t: string) => t.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
-    const lieu = [o.event.lieu, o.event.ville].filter(Boolean).join(", ");
-    const contenu = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//StartGen Mons//Agenda//FR",
-        "BEGIN:VEVENT",
-        `UID:${o.event.uid}-${utc(o.debut)}@startgen-mons`,
-        `DTSTAMP:${utc(new Date().toISOString())}`,
-        `DTSTART:${utc(o.debut)}`,
-        `DTEND:${utc(o.fin)}`,
-        `SUMMARY:${esc(o.event.titre)}`,
-        `LOCATION:${esc(lieu)}`,
-        `DESCRIPTION:${esc(o.event.resume || "")}${o.event.url ? esc(`\n${o.event.url}`) : ""}`,
-        "END:VEVENT",
-        "END:VCALENDAR",
-    ].join("\r\n");
-    const url = URL.createObjectURL(new Blob([contenu], { type: "text/calendar;charset=utf-8" }));
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${o.event.titre.replace(/[^\w-]+/g, "-").toLowerCase()}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
+// ---- Couleur par ville : chaque ville a toujours la même couleur dans tout l'agenda ----
+const COULEURS_VILLES: [string, string][] = [
+    ["mons", "#00D9FF"],
+    ["tournai", "#FB923C"],
+    ["namur", "#A78BFA"],
+    ["liege", "#F87171"],
+    ["arlon", "#FACC15"],
+    ["louvain", "#F472B6"],
+];
+const COULEURS_AUTRES = ["#2DD4BF", "#E879F9", "#94A3B8", "#F59E0B", "#A3E635"]; // pas de bleu : le bleu est réservé à Mons (cyan) et à l'interface
+const sansAccents = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+/** Couleur (hexadécimale) d'une ville. Une ville inconnue reçoit toujours la même couleur de la palette. */
+export function couleurVille(ville: string): string {
+    const v = sansAccents(ville || "");
+    const connue = COULEURS_VILLES.find(([nom]) => v.includes(nom));
+    if (connue) return connue[1];
+    if (!v) return "#9CA3AF";
+    let h = 0;
+    for (const c of v) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return COULEURS_AUTRES[h % COULEURS_AUTRES.length];
+}
+/** Même couleur, mais transparente (alpha de 0 à 1), pour les fonds */
+export const teinte = (hex: string, alpha: number) => `${hex}${Math.round(alpha * 255).toString(16).padStart(2, "0")}`;
+
+// ---- Ajouter à son agenda en un clic (la page de l'agenda s'ouvre déjà remplie, il reste à enregistrer) ----
+const compact = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+const lieuDe = (o: Occurence) => [o.event.lieu, o.event.ville].filter(Boolean).join(", ");
+const detailsDe = (o: Occurence) => [o.event.resume, o.event.url].filter(Boolean).join("\n\n");
+
+export function lienGoogleAgenda(o: Occurence): string {
+    const q = new URLSearchParams({
+        action: "TEMPLATE",
+        text: o.event.titre,
+        dates: `${compact(o.debut)}/${compact(o.fin)}`,
+        details: detailsDe(o),
+        location: lieuDe(o),
+        ctz: TZ,
+    });
+    return `https://calendar.google.com/calendar/render?${q}`;
 }

@@ -13,3 +13,8 @@ export function findById(id: string) {
 export function create(data: { email: string; password: string; nom: string; prenom: string }) {
     return prisma.user.create({ data });
 }
+
+// Seuls ces champs peuvent être modifiés (jamais le rôle)
+export function update(id: string, data: { email?: string; nom?: string; prenom?: string; password?: string }) {
+    return prisma.user.update({ where: { id }, data });
+}

@@ -1,11 +1,12 @@
 // Tous les textes des pages "Accueil" et "À propos" sont ici : pour changer un texte, on modifie ce fichier.
 // (Source : document "Présentation générale de Startgen Mons", version 2025-2026.)
 import { ICONES } from "@/components/ui/Ico";
+import { antennas } from "@/data/antennas";
 
 export const CHIFFRES = [
     { valeur: "250", label: "étudiants touchés chaque année : notre objectif" },
     { valeur: "4", label: "événements par an, 2 par quadrimestre" },
-    { valeur: "4", label: "clubs StartGen en Belgique" },
+    { valeur: String(antennas.length), label: "clubs StartGen en Belgique" },
     { valeur: "5", label: "sponsors qui nous soutiennent" },
 ];
 

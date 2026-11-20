@@ -1,4 +1,5 @@
 import SectionTitle from "@/components/ui/SectionTitle";
+import { antennas } from "@/data/antennas";
 
 // Qui sommes-nous : le réseau Startgen Belgium et LJE
 export default function Intro() {
@@ -13,7 +14,7 @@ export default function Intro() {
                         <a href="https://lje.be" target="_blank" rel="noopener noreferrer" className="text-brand underline transition hover:text-brand-hover">
                             LJE – Les Jeunes Entreprises
                         </a>
-                        . Pour l&apos;année 2025-2026, il regroupe quatre clubs : Mons, Louvain, Liège et Namur.
+                        . Il regroupe aujourd&apos;hui {antennas.length} clubs : {antennas.map((a) => a.ville).join(", ")}.
                     </p>
                     <p className="leading-relaxed">
                         Ces clubs promeuvent l&apos;entrepreneuriat chez les étudiants de l&apos;enseignement supérieur, sans lien direct avec une université ou une haute

@@ -2,10 +2,11 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { Ico, ICONES } from "@/components/ui/Ico";
+import { antennas } from "@/data/antennas";
 
 const POINTS = [
     "Aucun lien avec une université ou une haute école : tout étudiant de Mons peut participer",
-    "Un club qui fait partie de Startgen Belgium (Mons, Louvain, Liège et Namur)",
+    `Un club qui fait partie de Startgen Belgium (${antennas.map((a) => a.ville).join(", ")})`,
     "Un accompagnement concret : subsides, conseils financiers, mentors",
 ];
 
