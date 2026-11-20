@@ -44,13 +44,13 @@ export function ListeDuMois({
                         <section key={jour}>
                             {/* Quand on passe au mois suivant : un séparateur bien visible */}
                             {nouveauMois && (
-                                <p className="mb-4 mt-2 rounded-lg bg-[#3B82F6]/10 px-3 py-2 text-sm font-bold capitalize text-[#60A5FA]">{fmtMoisAnnee(duJour[0].debut)}</p>
+                                <p className="mb-4 mt-2 rounded-lg bg-brand/10 px-3 py-2 text-sm font-bold capitalize text-brand">{fmtMoisAnnee(duJour[0].debut)}</p>
                             )}
                             {/* En-tête de date : sépare clairement chaque journée */}
                             <div className="mb-2.5 flex items-center gap-3">
-                                <h4 className={`text-sm font-bold capitalize ${estAujourdhui ? "text-[#60A5FA]" : "text-white"}`}>
+                                <h4 className={`text-sm font-bold capitalize ${estAujourdhui ? "text-brand" : "text-white"}`}>
                                     {fmt(duJour[0].debut, { weekday: "long", day: "numeric", month: "long" })}
-                                    {estAujourdhui && <span className="ml-2 rounded-full bg-[#3B82F6] px-2 py-0.5 text-[11px] font-semibold text-white">Aujourd&apos;hui</span>}
+                                    {estAujourdhui && <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-[11px] font-semibold text-black">Aujourd&apos;hui</span>}
                                 </h4>
                                 <span className="h-px flex-1 bg-white/15" />
                             </div>

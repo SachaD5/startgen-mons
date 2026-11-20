@@ -103,7 +103,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                                     setFenetre(false);
                                 }}
                                 className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition ${
-                                    vue === v ? "bg-[#3B82F6] text-white" : "text-gray-300 hover:text-white"
+                                    vue === v ? "bg-brand text-black" : "text-gray-300 hover:text-white"
                                 }`}
                             >
                                 {v}
@@ -119,7 +119,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                             value={recherche}
                             onChange={(e) => setRecherche(e.target.value)}
                             placeholder="Rechercher un événement"
-                            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:border-[#3B82F6] focus:outline-none sm:w-64"
+                            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:border-brand focus:outline-none sm:w-64"
                         />
                     </label>
                 </div>
@@ -150,7 +150,7 @@ export default function AgendaView({ events, error }: { events: AgendaEvent[]; e
                             setVille(null);
                             setRecherche("");
                         }}
-                        className="mt-4 rounded-full border border-[#3B82F6]/50 px-5 py-2 text-sm font-semibold text-[#60A5FA] transition hover:bg-[#3B82F6]/10"
+                        className="mt-4 rounded-full border border-brand/50 px-5 py-2 text-sm font-semibold text-brand transition hover:bg-brand/10"
                     >
                         Effacer les filtres
                     </button>
@@ -215,7 +215,7 @@ function Puce({ actif, onClick, couleur, children }: { actif: boolean; onClick: 
             aria-pressed={actif}
             style={couleur && actif ? { borderColor: couleur, backgroundColor: `${couleur}26`, color: couleur } : undefined}
             className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition ${
-                actif ? (couleur ? "font-semibold" : "border-[#3B82F6] bg-[#3B82F6]/15 font-semibold text-[#60A5FA]") : "border-white/10 text-gray-300 hover:border-white/30"
+                actif ? (couleur ? "font-semibold" : "border-brand bg-brand/15 font-semibold text-brand") : "border-white/10 text-gray-300 hover:border-white/30"
             }`}
         >
             {couleur && <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: couleur }} />}

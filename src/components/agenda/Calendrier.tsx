@@ -29,7 +29,7 @@ export function Calendrier({
             <div className="mb-5 flex items-center justify-between gap-2">
                 <h2 className="text-xl font-bold capitalize text-white sm:text-2xl">{titre}</h2>
                 <div className="flex items-center gap-1">
-                    <button onClick={aujourdhuiMois} className="mr-1 rounded-lg border border-white/15 px-3 py-1.5 text-sm text-gray-200 transition hover:border-[#3B82F6] hover:text-[#60A5FA]">
+                    <button onClick={aujourdhuiMois} className="mr-1 rounded-lg border border-white/15 px-3 py-1.5 text-sm text-gray-200 transition hover:border-brand hover:text-brand">
                         Aujourd&apos;hui
                     </button>
                     <button onClick={() => aller(-1)} aria-label="Mois précédent" className="rounded-lg p-2 text-gray-300 transition hover:bg-white/10">
@@ -83,14 +83,14 @@ export function Calendrier({
                                 doc.length === 0 ? "min-h-12 sm:min-h-14" : "min-h-20 sm:min-h-28",
                                 "rounded-xl border p-1.5 sm:p-2",
                                 "transition-opacity duration-200",
-                                contientChoisie ? "" : estAujourdhui && !couleurJour ? "border-[#3B82F6]/50 bg-white/[0.05]" : "border-white/5 bg-white/[0.03]",
+                                contientChoisie ? "" : estAujourdhui && !couleurJour ? "border-brand/50 bg-white/[0.05]" : "border-white/5 bg-white/[0.03]",
                                 choisie && !contientChoisie ? "opacity-45 hover:opacity-100" : "",
                             ].join(" ")}
                         >
                             <span
                                 style={estAujourdhui && couleurJour ? { backgroundColor: couleurJour } : undefined}
                                 className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs font-semibold sm:text-sm ${
-                                    estAujourdhui ? (couleurJour ? "text-black" : "bg-[#3B82F6] text-white") : doc.length ? "text-white" : "text-gray-500"
+                                    estAujourdhui ? (couleurJour ? "text-black" : "bg-brand text-black") : doc.length ? "text-white" : "text-gray-500"
                                 }`}
                             >
                                 {i + 1}
